@@ -5,13 +5,15 @@ public class RuleTests
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenPredicateIsNull()
     {
-        Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(null!, ""));
+        var exception = Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(null!, ""));
+        Assert.Equal("predicate", exception.ParamName);
     }
 
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenMessageIsNull()
     {
-        Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(_ => true, null!));
+        var exception = Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(_ => true, null!));
+        Assert.Equal("message", exception.ParamName);
     }
 
     [Theory]
@@ -19,7 +21,8 @@ public class RuleTests
     [InlineData(" ")]
     public void FromPredicate_ShouldThrowArgumentException_WhenMessageIsEmpty(string message)
     {
-        Assert.Throws<ArgumentException>(() => Rule.FromPredicate<int>(_ => true, message));
+        var exception = Assert.Throws<ArgumentException>(() => Rule.FromPredicate<int>(_ => true, message));
+        Assert.Equal("message", exception.ParamName);
     }
 
     [Fact]
