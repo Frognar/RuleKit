@@ -18,10 +18,10 @@ public static class Rule
     /// </summary>
     /// <typeparam name="T">The input type evaluated by the rule.</typeparam>
     /// <param name="predicate">The predicate used to evaluate the input.</param>
-    /// <param name="message">The human-readable message describing the rule outcome.</param>
-    /// <returns>A rule that returns a valid result when the predicate evaluates to <c>true</c>; otherwise, an invalid result.</returns>
+    /// <param name="message">The human-readable failure message returned when the predicate evaluates to <c>false</c>.</param>
+    /// <returns>A rule that returns a valid result when the predicate evaluates to <c>true</c>; otherwise, an invalid result with the supplied message.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="predicate"/> is <c>null</c>.
+    /// Thrown when <paramref name="predicate"/> is <c>null</c> or <paramref name="message"/> is <c>null</c>.
     /// </exception>
     public static Rule<T> FromPredicate<T>(Func<T, bool> predicate, string message)
     {
