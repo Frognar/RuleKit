@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/sln/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/RuleKit/RuleKit.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RuleKit.Tests/RuleKit.Tests.csproj" />
+  </Folder>
+</Solution>
