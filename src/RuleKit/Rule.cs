@@ -19,8 +19,12 @@ public static class Rule
     /// <typeparam name="T">The input type evaluated by the rule.</typeparam>
     /// <param name="predicate">The predicate used to evaluate the input.</param>
     /// <returns>A rule that returns a valid result when the predicate evaluates to <c>true</c>; otherwise, an invalid result.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="predicate"/> is <c>null</c>.
+    /// </exception>
     public static Rule<T> FromPredicate<T>(Func<T, bool> predicate)
     {
+        ArgumentNullException.ThrowIfNull(predicate);
         return x => predicate(x) ? new RuleResult(true) : new RuleResult(false);
     }
 }
