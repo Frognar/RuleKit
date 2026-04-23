@@ -14,11 +14,19 @@ public class RuleTests
         Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(_ => true, null!));
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void FromPredicate_ShouldThrowArgumentException_WhenMessageIsEmpty(string message)
+    {
+        Assert.Throws<ArgumentException>(() => Rule.FromPredicate<int>(_ => true, message));
+    }
+
     [Fact]
     public void FromPredicate_ShouldReturnValidResult_WhenPredicateIsTrue()
     {
         // arrange
-        var rule = Rule.FromPredicate<int>(_ => true, "");
+        var rule = Rule.FromPredicate<int>(_ => true, "failed");
 
         // act
         var result = rule(1);
@@ -31,7 +39,7 @@ public class RuleTests
     public void FromPredicate_ShouldReturnInvalidResult_WhenPredicateIsFalse()
     {
         // arrange
-        var rule = Rule.FromPredicate<int>(_ => false, "");
+        var rule = Rule.FromPredicate<int>(_ => false, "failed");
 
         // act
         var result = rule(-1);
