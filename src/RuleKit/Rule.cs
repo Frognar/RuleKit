@@ -30,6 +30,6 @@ public static class Rule
     {
         ArgumentNullException.ThrowIfNull(predicate);
         ArgumentException.ThrowIfNullOrWhiteSpace(message);
-        return x => predicate(x) ? new ValidRuleResult() : new InvalidRuleResult(message);
+        return x => predicate(x) ? new RulePassed() : new RuleFailed(message);
     }
 }

@@ -26,7 +26,7 @@ public class RuleTests
     }
 
     [Fact]
-    public void FromPredicate_ShouldReturnValidResult_WhenPredicateIsTrue()
+    public void FromPredicate_ShouldReturnPassedResult_WhenPredicateIsTrue()
     {
         // arrange
         var rule = Rule.FromPredicate<int>(_ => true, "failed");
@@ -35,11 +35,11 @@ public class RuleTests
         var result = rule(1);
 
         // assert
-        Assert.IsType<ValidRuleResult>(result);
+        Assert.IsType<RulePassed>(result);
     }
 
     [Fact]
-    public void FromPredicate_ShouldReturnInvalidResult_WhenPredicateIsFalse()
+    public void FromPredicate_ShouldReturnFailedResult_WhenPredicateIsFalse()
     {
         // arrange
         var rule = Rule.FromPredicate<int>(_ => false, "failed");
@@ -48,20 +48,20 @@ public class RuleTests
         var result = rule(-1);
 
         // assert
-        Assert.IsType<InvalidRuleResult>(result);
+        Assert.IsType<RuleFailed>(result);
     }
 
     [Fact]
-    public void FromPredicate_ShouldReturnInvalidResultWithMessage_WhenPredicateIsFalse()
+    public void FromPredicate_ShouldReturnFailedResultWithMessage_WhenPredicateIsFalse()
     {
         // arrange
-        var rule = Rule.FromPredicate<int>(x => x > 0, "failed");
+        var rule = Rule.FromPredicate<int>(_ => false, "failed");
 
         // act
         var result = rule(-1);
 
         // assert
-        var invalid = Assert.IsType<InvalidRuleResult>(result);
-        Assert.Equal("failed", invalid.Message);
+        var failed = Assert.IsType<RuleFailed>(result);
+        Assert.Equal("failed", failed.Message);
     }
 }
