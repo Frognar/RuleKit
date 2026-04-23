@@ -26,7 +26,7 @@ public static class Rule
     public static Rule<T> FromPredicate<T>(Func<T, bool> predicate, string message)
     {
         ArgumentNullException.ThrowIfNull(predicate);
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(message);
-        return x => predicate(x) ? new RuleResult(true, null) : new RuleResult(false, message);
+        ArgumentException.ThrowIfNullOrWhiteSpace(message);
+        return x => predicate(x) ? new ValidRuleResult() : new InvalidRuleResult(message);
     }
 }

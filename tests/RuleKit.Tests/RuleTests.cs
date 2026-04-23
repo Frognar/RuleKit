@@ -32,7 +32,7 @@ public class RuleTests
         var result = rule(1);
 
         // assert
-        Assert.True(result.IsValid);
+        Assert.IsType<ValidRuleResult>(result);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class RuleTests
         var result = rule(-1);
 
         // assert
-        Assert.False(result.IsValid);
+        Assert.IsType<InvalidRuleResult>(result);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class RuleTests
         var result = rule(-1);
 
         // assert
-        Assert.False(result.IsValid);
-        Assert.Equal("failed", result.Message);
+        var invalid = Assert.IsType<InvalidRuleResult>(result);
+        Assert.Equal("failed", invalid.Message);
     }
 }
