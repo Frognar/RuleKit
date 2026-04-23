@@ -3,19 +3,19 @@ namespace RuleKit.Tests;
 public class RuleTests
 {
     [Fact]
-    public void FromPredicate_should_throw_ArgumentNullException_when_predicate_is_null()
+    public void FromPredicate_ShouldThrowArgumentNullException_WhenPredicateIsNull()
     {
         Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(null!, ""));
     }
 
     [Fact]
-    public void FromPredicate_should_throw_ArgumentNullException_when_message_is_null()
+    public void FromPredicate_ShouldThrowArgumentNullException_WhenMessageIsNull()
     {
         Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(_ => true, null!));
     }
 
     [Fact]
-    public void FromPredicate_should_return_valid_result_when_predicate_is_true()
+    public void FromPredicate_ShouldReturnValidResult_WhenPredicateIsTrue()
     {
         // arrange
         var rule = Rule.FromPredicate<int>(_ => true, "");
@@ -28,7 +28,7 @@ public class RuleTests
     }
 
     [Fact]
-    public void FromPredicate_should_return_invalid_result_when_predicate_is_false()
+    public void FromPredicate_ShouldReturnInvalidResult_WhenPredicateIsFalse()
     {
         // arrange
         var rule = Rule.FromPredicate<int>(_ => false, "");
@@ -41,7 +41,7 @@ public class RuleTests
     }
 
     [Fact]
-    public void FromPredicate_should_return_invalid_result_with_message_when_predicate_is_false()
+    public void FromPredicate_ShouldReturnInvalidResultWithMessage_WhenPredicateIsFalse()
     {
         // arrange
         var rule = Rule.FromPredicate<int>(x => x > 0, "failed");
