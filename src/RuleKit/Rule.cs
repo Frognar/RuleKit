@@ -1,0 +1,26 @@
+namespace RuleKit;
+
+/// <summary>
+/// Represents a pure rule that evaluates input data and returns a <see cref="RuleResult"/>.
+/// </summary>
+/// <typeparam name="T">The input type evaluated by the rule.</typeparam>
+/// <param name="input">The input value to evaluate.</param>
+/// <returns>A <see cref="RuleResult"/> describing whether the input satisfies the rule.</returns>
+public delegate RuleResult Rule<in T>(T input);
+
+/// <summary>
+/// Provides factory methods for creating rules.
+/// </summary>
+public static class Rule
+{
+    /// <summary>
+    /// Creates a rule from a predicate function.
+    /// </summary>
+    /// <typeparam name="T">The input type evaluated by the rule.</typeparam>
+    /// <param name="predicate">The predicate used to evaluate the input.</param>
+    /// <returns>A rule that returns a valid result when the predicate evaluates to <c>true</c>; otherwise, an invalid result.</returns>
+    public static Rule<T> FromPredicate<T>(Func<T, bool> predicate)
+    {
+        return x => predicate(x) ? new RuleResult(true) : new RuleResult(false);
+    }
+}
