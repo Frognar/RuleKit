@@ -2,22 +2,24 @@ namespace RuleKit.Tests;
 
 public class RuleTests
 {
-    private readonly Rule<int> alwaysPassingRule = Rule.FromPredicate<int>(_ => true, "failed");
-    private readonly Rule<int> alwaysFailingRule = Rule.FromPredicate<int>(_ => false, "failed");
-    private static Rule<T> CreateRule<T>(Func<T, bool> predicate, string msg) => Rule.FromPredicate(predicate, msg);
+    private readonly Rule<int> alwaysPassingRule = CreateRule<int>(_ => true);
+    private readonly Rule<int> alwaysFailingRule = CreateRule<int>(_ => false);
+    private static Rule<T> CreateRule<T>(Func<T, bool> predicate, string message = "failed") =>
+        Rule.FromPredicate(predicate, message);
+
     private static Rule<T> Negate<T>(Rule<T> rule, string msg) => Rules.Not(rule, msg);
 
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenPredicateIsNull()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => CreateRule<int>(null!, ""));
+        var exception = Assert.Throws<ArgumentNullException>(() => CreateRule<int>(null!));
         Assert.Equal("predicate", exception.ParamName);
     }
 
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenMessageIsNull()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => CreateRule<int>(_ => true, null!));
+        var exception = Assert.Throws<ArgumentNullException>(() => CreateRule<int>(_ => true, message: null!));
         Assert.Equal("message", exception.ParamName);
     }
 
@@ -26,7 +28,7 @@ public class RuleTests
     [InlineData(" ")]
     public void FromPredicate_ShouldThrowArgumentException_WhenMessageIsEmpty(string message)
     {
-        var exception = Assert.Throws<ArgumentException>(() => CreateRule<int>(_ => true, message));
+        var exception = Assert.Throws<ArgumentException>(() => CreateRule<int>(_ => true, message: message));
         Assert.Equal("message", exception.ParamName);
     }
 
