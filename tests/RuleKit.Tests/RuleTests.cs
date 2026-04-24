@@ -2,17 +2,22 @@ namespace RuleKit.Tests;
 
 public class RuleTests
 {
+    private readonly Rule<int> alwaysPassingRule = Rule.FromPredicate<int>(_ => true, "failed");
+    private readonly Rule<int> alwaysFailingRule = Rule.FromPredicate<int>(_ => false, "failed");
+    private static Rule<T> CreateRule<T>(Func<T, bool> predicate, string msg) => Rule.FromPredicate(predicate, msg);
+    private static Rule<T> Negate<T>(Rule<T> rule, string msg) => Rules.Not(rule, msg);
+
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenPredicateIsNull()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(null!, ""));
+        var exception = Assert.Throws<ArgumentNullException>(() => CreateRule<int>(null!, ""));
         Assert.Equal("predicate", exception.ParamName);
     }
 
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenMessageIsNull()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => Rule.FromPredicate<int>(_ => true, null!));
+        var exception = Assert.Throws<ArgumentNullException>(() => CreateRule<int>(_ => true, null!));
         Assert.Equal("message", exception.ParamName);
     }
 
@@ -21,18 +26,15 @@ public class RuleTests
     [InlineData(" ")]
     public void FromPredicate_ShouldThrowArgumentException_WhenMessageIsEmpty(string message)
     {
-        var exception = Assert.Throws<ArgumentException>(() => Rule.FromPredicate<int>(_ => true, message));
+        var exception = Assert.Throws<ArgumentException>(() => CreateRule<int>(_ => true, message));
         Assert.Equal("message", exception.ParamName);
     }
 
     [Fact]
     public void FromPredicate_ShouldReturnPassedResult_WhenPredicateIsTrue()
     {
-        // arrange
-        var rule = Rule.FromPredicate<int>(_ => true, "failed");
-
         // act
-        var result = rule(1);
+        var result = alwaysPassingRule(0);
 
         // assert
         Assert.IsType<RulePassed>(result);
@@ -41,11 +43,8 @@ public class RuleTests
     [Fact]
     public void FromPredicate_ShouldReturnFailedResult_WhenPredicateIsFalse()
     {
-        // arrange
-        var rule = Rule.FromPredicate<int>(_ => false, "failed");
-
         // act
-        var result = rule(-1);
+        var result = alwaysFailingRule(0);
 
         // assert
         Assert.IsType<RuleFailed>(result);
@@ -54,11 +53,8 @@ public class RuleTests
     [Fact]
     public void FromPredicate_ShouldReturnFailedResultWithMessage_WhenPredicateIsFalse()
     {
-        // arrange
-        var rule = Rule.FromPredicate<int>(_ => false, "failed");
-
         // act
-        var result = rule(-1);
+        var result = alwaysFailingRule(0);
 
         // assert
         var failed = Assert.IsType<RuleFailed>(result);
@@ -68,15 +64,14 @@ public class RuleTests
     [Fact]
     public void Not_ShouldThrowArgumentNullException_WhenRuleIsNull()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => Rules.Not<int>(null!, "failed"));
+        var exception = Assert.Throws<ArgumentNullException>(() => Negate<int>(null!, "failed"));
         Assert.Equal("rule", exception.ParamName);
     }
 
     [Fact]
     public void Not_ShouldThrowArgumentNullException_WhenMessageIsNull()
     {
-        var rule = Rule.FromPredicate<int>(_ => true, "failed");
-        var exception = Assert.Throws<ArgumentNullException>(() => Rules.Not(rule, null!));
+        var exception = Assert.Throws<ArgumentNullException>(() => Negate(alwaysPassingRule, null!));
         Assert.Equal("message", exception.ParamName);
     }
 
@@ -85,8 +80,7 @@ public class RuleTests
     [InlineData(" ")]
     public void Not_ShouldThrowArgumentException_WhenMessageIsEmpty(string message)
     {
-        var rule = Rule.FromPredicate<int>(_ => true, "failed");
-        var exception = Assert.Throws<ArgumentException>(() => Rules.Not(rule, message));
+        var exception = Assert.Throws<ArgumentException>(() => Negate(alwaysPassingRule, message));
         Assert.Equal("message", exception.ParamName);
     }
 
@@ -94,8 +88,7 @@ public class RuleTests
     public void Not_ShouldReturnFailedResult_WhenInnerRuleReturnsPassedResult()
     {
         // arrange
-        var rule = Rule.FromPredicate<int>(_ => true, "failed");
-        rule = Rules.Not(rule, "failed");
+        var rule = Negate(alwaysPassingRule, "failed");
 
         // act
         var result = rule(0);
@@ -108,8 +101,7 @@ public class RuleTests
     public void Not_ShouldReturnPassedResult_WhenInnerRuleReturnsFailedResult()
     {
         // arrange
-        var rule = Rule.FromPredicate<int>(_ => false, "failed");
-        rule = Rules.Not(rule, "failed");
+        var rule = Negate(alwaysFailingRule, "failed");
 
         // act
         var result = rule(0);
