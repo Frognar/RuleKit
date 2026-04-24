@@ -12,6 +12,7 @@ public static class Rules
     /// </summary>
     /// <typeparam name="T">The input type evaluated by the rule.</typeparam>
     /// <param name="rule">The rule to invert.</param>
+    /// <param name="code">A short, stable code used to classify the rule failure.</param>
     /// <param name="message">The human-readable failure message returned when the inner rule evaluates to <c>true</c>.</param>
     /// <returns>
     /// A rule that returns <see cref="RuleFailed"/> when the inner rule returns <see cref="RulePassed"/>,
@@ -21,14 +22,15 @@ public static class Rules
     /// Thrown when <paramref name="rule"/> is <c>null</c> or <paramref name="message"/> is <c>null</c>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="message"/> is <c>empty</c> or <c>whitespace</c>.
+    /// Thrown when <paramref name="code"/> is <c>empty</c> or <c>whitespace</c> or <paramref name="message"/> is <c>empty</c> or <c>whitespace</c>.
     /// </exception>
     /// <exception cref="UnreachableException">
     /// Thrown when the inner rule returns an unexpected <see cref="RuleResult"/> implementation.
     /// </exception>
-    public static Rule<T> Not<T>(Rule<T> rule, string message)
+    public static Rule<T> Not<T>(Rule<T> rule, string code, string message)
     {
         ArgumentNullException.ThrowIfNull(rule);
+        ArgumentException.ThrowIfNullOrWhiteSpace(code);
         ArgumentException.ThrowIfNullOrWhiteSpace(message);
         return x => rule(x) switch
         {

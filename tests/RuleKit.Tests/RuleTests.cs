@@ -7,8 +7,8 @@ public class RuleTests
     private static Rule<T> CreateRule<T>(Func<T, bool> predicate, string code = "general", string message = "failed") =>
         Rule.FromPredicate(predicate, code, message);
 
-    private static Rule<T> Negate<T>(Rule<T> rule, string message = "failed") =>
-        Rules.Not(rule, message);
+    private static Rule<T> Negate<T>(Rule<T> rule, string code = "general", string message = "failed") =>
+        Rules.Not(rule, code, message);
 
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenPredicateIsNull()
@@ -85,6 +85,22 @@ public class RuleTests
     {
         var exception = Assert.Throws<ArgumentNullException>(() => Negate<int>(null!));
         Assert.Equal("rule", exception.ParamName);
+    }
+
+    [Fact]
+    public void Not_ShouldThrowArgumentNullException_WhenCodeIsNull()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => Negate(alwaysPassingRule, code: null!));
+        Assert.Equal("code", exception.ParamName);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Not_ShouldThrowArgumentException_WhenCodeIsEmpty(string code)
+    {
+        var exception = Assert.Throws<ArgumentException>(() => Negate(alwaysPassingRule, code: code));
+        Assert.Equal("code", exception.ParamName);
     }
 
     [Fact]
