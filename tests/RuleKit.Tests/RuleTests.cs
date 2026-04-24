@@ -4,8 +4,8 @@ public class RuleTests
 {
     private readonly Rule<int> alwaysPassingRule = CreateRule<int>(_ => true);
     private readonly Rule<int> alwaysFailingRule = CreateRule<int>(_ => false);
-    private static Rule<T> CreateRule<T>(Func<T, bool> predicate, string message = "failed") =>
-        Rule.FromPredicate(predicate, message);
+    private static Rule<T> CreateRule<T>(Func<T, bool> predicate, string code = "general", string message = "failed") =>
+        Rule.FromPredicate(predicate, code, message);
 
     private static Rule<T> Negate<T>(Rule<T> rule, string msg) => Rules.Not(rule, msg);
 
@@ -14,6 +14,22 @@ public class RuleTests
     {
         var exception = Assert.Throws<ArgumentNullException>(() => CreateRule<int>(null!));
         Assert.Equal("predicate", exception.ParamName);
+    }
+
+    [Fact]
+    public void FromPredicate_ShouldThrowArgumentNullException_WhenCodeIsNull()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => CreateRule<int>(_ => true, code: null!));
+        Assert.Equal("code", exception.ParamName);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void FromPredicate_ShouldThrowArgumentException_WhenCodeIsEmpty(string code)
+    {
+        var exception = Assert.Throws<ArgumentException>(() => CreateRule<int>(_ => true, code: code));
+        Assert.Equal("code", exception.ParamName);
     }
 
     [Fact]
