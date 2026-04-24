@@ -32,6 +32,6 @@ public static class Rule
         ArgumentNullException.ThrowIfNull(predicate);
         ArgumentException.ThrowIfNullOrWhiteSpace(code);
         ArgumentException.ThrowIfNullOrWhiteSpace(message);
-        return x => predicate(x) ? new RulePassed() : new RuleFailed(message);
+        return x => predicate(x) ? new RulePassed() : new RuleFailed(code, message);
     }
 }

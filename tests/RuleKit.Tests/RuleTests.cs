@@ -70,6 +70,17 @@ public class RuleTests
     }
 
     [Fact]
+    public void FromPredicate_ShouldReturnFailedResultWithCode_WhenPredicateIsFalse()
+    {
+        // act
+        var result = alwaysFailingRule(0);
+
+        // assert
+        var failed = Assert.IsType<RuleFailed>(result);
+        Assert.Equal("general", failed.Code);
+    }
+
+    [Fact]
     public void FromPredicate_ShouldReturnFailedResultWithMessage_WhenPredicateIsFalse()
     {
         // act

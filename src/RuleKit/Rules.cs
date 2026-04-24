@@ -34,7 +34,7 @@ public static class Rules
         ArgumentException.ThrowIfNullOrWhiteSpace(message);
         return x => rule(x) switch
         {
-            RulePassed => new RuleFailed(message),
+            RulePassed => new RuleFailed(code, message),
             RuleFailed => new RulePassed(),
             _ => throw new UnreachableException()
         };
