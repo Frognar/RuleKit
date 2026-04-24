@@ -255,4 +255,53 @@ public class RuleTests
         // assert
         Assert.Equal("left", exception.ParamName);
     }
+
+    [Fact]
+    public void And_ShouldReturnPassedResult_WhenBothLeftAndRightReturnPassedResult()
+    {
+        // arrange
+        var left = CreateRule(alwaysTruePredicate);
+        var right = CreateRule(alwaysTruePredicate);
+        var rule = And(left, right);
+
+        // act
+        var result = rule(0);
+
+        // assert
+        Assert.IsType<RulePassed>(result);
+    }
+
+    [Fact]
+    public void And_ShouldReturnFailedResult_WhenLeftReturnsFailedResult()
+    {
+        // arrange
+        var left = CreateRule(alwaysFalsePredicate, code: "left", message: "left-failed");
+        var right = CreateRule(alwaysTruePredicate);
+        var rule = And(left, right);
+
+        // act
+        var result = rule(0);
+
+        // assert
+        var failed = Assert.IsType<RuleFailed>(result);
+        Assert.Equal("left", failed.Code);
+        Assert.Equal("left-failed", failed.Message);
+    }
+
+    [Fact]
+    public void And_ShouldReturnFailedResult_WhenRightReturnsFailedResult()
+    {
+        // arrange
+        var left = CreateRule(alwaysTruePredicate);
+        var right = CreateRule(alwaysFalsePredicate, code: "right", message: "right-failed");
+        var rule = And(left, right);
+
+        // act
+        var result = rule(0);
+
+        // assert
+        var failed = Assert.IsType<RuleFailed>(result);
+        Assert.Equal("right", failed.Code);
+        Assert.Equal("right-failed", failed.Message);
+    }
 }
