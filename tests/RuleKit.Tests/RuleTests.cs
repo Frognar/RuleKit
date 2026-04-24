@@ -9,6 +9,9 @@ public class RuleTests
 
     private static Rule<T> Negate<T>(Rule<T> rule, string code = "general", string message = "failed") =>
         Rules.Not(rule, code, message);
+    
+    private static Rule<T> And<T>(Rule<T> left, Rule<T> right) =>
+        Rules.And(left, right);
 
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenPredicateIsNull()
@@ -225,5 +228,31 @@ public class RuleTests
 
         // assert
         Assert.IsType<RulePassed>(result);
+    }
+
+    [Fact]
+    public void And_ShouldThrowArgumentNullException_WhenRightIsNull()
+    {
+        // arrange
+        var left = CreateRule(alwaysTruePredicate);
+
+        // act
+        var exception = Assert.Throws<ArgumentNullException>(() => And(left, null!));
+
+        // assert
+        Assert.Equal("right", exception.ParamName);
+    }
+
+    [Fact]
+    public void And_ShouldThrowArgumentNullException_WhenLeftIsNull()
+    {
+        // arrange
+        var right = CreateRule(alwaysTruePredicate);
+
+        // act
+        var exception = Assert.Throws<ArgumentNullException>(() => And(null!, right));
+
+        // assert
+        Assert.Equal("left", exception.ParamName);
     }
 }
