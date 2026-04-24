@@ -25,7 +25,7 @@ public static class Rule
     /// Thrown when <paramref name="predicate"/> is <c>null</c> or <paramref name="message"/> is <c>null</c>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="message"/> is <c>empty</c> or <c>whitespace</c>.
+    /// Thrown when <paramref name="code"/> is <c>empty</c> or <c>whitespace</c> or <paramref name="message"/> is <c>empty</c> or <c>whitespace</c>.
     /// </exception>
     public static Rule<T> FromPredicate<T>(Func<T, bool> predicate, string code, string message)
     {
