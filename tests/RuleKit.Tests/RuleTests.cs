@@ -7,7 +7,8 @@ public class RuleTests
     private static Rule<T> CreateRule<T>(Func<T, bool> predicate, string code = "general", string message = "failed") =>
         Rule.FromPredicate(predicate, code, message);
 
-    private static Rule<T> Negate<T>(Rule<T> rule, string msg) => Rules.Not(rule, msg);
+    private static Rule<T> Negate<T>(Rule<T> rule, string message = "failed") =>
+        Rules.Not(rule, message);
 
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenPredicateIsNull()
@@ -82,14 +83,14 @@ public class RuleTests
     [Fact]
     public void Not_ShouldThrowArgumentNullException_WhenRuleIsNull()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => Negate<int>(null!, "failed"));
+        var exception = Assert.Throws<ArgumentNullException>(() => Negate<int>(null!));
         Assert.Equal("rule", exception.ParamName);
     }
 
     [Fact]
     public void Not_ShouldThrowArgumentNullException_WhenMessageIsNull()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => Negate(alwaysPassingRule, null!));
+        var exception = Assert.Throws<ArgumentNullException>(() => Negate(alwaysPassingRule, message: null!));
         Assert.Equal("message", exception.ParamName);
     }
 
@@ -98,7 +99,7 @@ public class RuleTests
     [InlineData(" ")]
     public void Not_ShouldThrowArgumentException_WhenMessageIsEmpty(string message)
     {
-        var exception = Assert.Throws<ArgumentException>(() => Negate(alwaysPassingRule, message));
+        var exception = Assert.Throws<ArgumentException>(() => Negate(alwaysPassingRule, message: message));
         Assert.Equal("message", exception.ParamName);
     }
 
@@ -106,7 +107,7 @@ public class RuleTests
     public void Not_ShouldReturnFailedResult_WhenInnerRuleReturnsPassedResult()
     {
         // arrange
-        var rule = Negate(alwaysPassingRule, "failed");
+        var rule = Negate(alwaysPassingRule);
 
         // act
         var result = rule(0);
@@ -119,7 +120,7 @@ public class RuleTests
     public void Not_ShouldReturnPassedResult_WhenInnerRuleReturnsFailedResult()
     {
         // arrange
-        var rule = Negate(alwaysFailingRule, "failed");
+        var rule = Negate(alwaysFailingRule);
 
         // act
         var result = rule(0);
