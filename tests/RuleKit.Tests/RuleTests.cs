@@ -333,4 +333,64 @@ public class RuleTests
         // assert
         Assert.Equal("left", exception.ParamName);
     }
+
+    [Fact]
+    public void Or_ShouldReturnPassedResult_WhenBothLeftAndRightReturnPassedResult()
+    {
+        // arrange
+        var left = CreateRule(alwaysTruePredicate);
+        var right = CreateRule(alwaysTruePredicate);
+        var rule = Or(left, right);
+
+        // act
+        var result = rule(0);
+
+        // assert
+        Assert.IsType<RulePassed>(result);
+    }
+
+    [Fact]
+    public void Or_ShouldReturnFailedResult_WhenBothLeftAndRightReturnFailedResult()
+    {
+        // arrange
+        var left = CreateRule(alwaysFalsePredicate, code: "left", message: "left-failed");
+        var right = CreateRule(alwaysFalsePredicate, code: "right", message: "right-failed");
+        var rule = Or(left, right);
+
+        // act
+        var result = rule(0);
+
+        // assert
+        Assert.IsType<RuleFailed>(result);
+    }
+
+    [Fact]
+    public void Or_ShouldReturnPassedResult_WhenRightReturnsPassedResult()
+    {
+        // arrange
+        var left = CreateRule(alwaysFalsePredicate, code: "left", message: "left-failed");
+        var right = CreateRule(alwaysTruePredicate);
+        var rule = Or(left, right);
+
+        // act
+        var result = rule(0);
+
+        // assert
+        Assert.IsType<RulePassed>(result);
+    }
+
+    [Fact]
+    public void Or_ShouldReturnPassedResult_WhenLeftReturnsPassedResult()
+    {
+        // arrange
+        var left = CreateRule(alwaysTruePredicate);
+        var right = CreateRule(alwaysFalsePredicate, code: "right", message: "right-failed");
+        var rule = Or(left, right);
+
+        // act
+        var result = rule(0);
+
+        // assert
+        Assert.IsType<RulePassed>(result);
+    }
 }

@@ -91,6 +91,16 @@ public static class Rules
     {
         ArgumentNullException.ThrowIfNull(left);
         ArgumentNullException.ThrowIfNull(right);
-        return left;
+        return x => left(x) switch
+        {
+            RulePassed _ => new RulePassed(),
+            RuleFailed _ => right(x) switch
+            {
+                RulePassed => new RulePassed(),
+                RuleFailed failed => failed,
+                _ => throw new UnreachableException()
+            },
+            _ => throw new UnreachableException()
+        };
     }
 }
