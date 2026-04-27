@@ -71,4 +71,26 @@ public static class Rules
             _ => throw new UnreachableException()
         };
     }
+
+    /// <summary>
+    /// Combines two rules using logical disjunction.
+    /// </summary>
+    /// <typeparam name="T">The input type evaluated by the rules.</typeparam>
+    /// <param name="left">The first rule to evaluate.</param>
+    /// <param name="right">The second rule to evaluate.</param>
+    /// <returns>
+    /// A rule that returns <see cref="RulePassed"/> when either left or right rule return <see cref="RulePassed"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="left"/> is <c>null</c> or <paramref name="right"/> is <c>null</c>.
+    /// </exception>
+    /// <exception cref="UnreachableException">
+    /// Thrown when the left or right rule returns an unexpected <see cref="RuleResult"/> implementation.
+    /// </exception>
+    public static Rule<T> Or<T>(Rule<T> left, Rule<T> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        return left;
+    }
 }

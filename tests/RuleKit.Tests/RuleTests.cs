@@ -13,6 +13,9 @@ public class RuleTests
     private static Rule<T> And<T>(Rule<T> left, Rule<T> right) =>
         Rules.And(left, right);
 
+    private static Rule<T> Or<T>(Rule<T> left, Rule<T> right) =>
+        Rules.Or(left, right);
+
     [Fact]
     public void FromPredicate_ShouldThrowArgumentNullException_WhenPredicateIsNull()
     {
@@ -303,5 +306,31 @@ public class RuleTests
         var failed = Assert.IsType<RuleFailed>(result);
         Assert.Equal("right", failed.Code);
         Assert.Equal("right-failed", failed.Message);
+    }
+
+    [Fact]
+    public void Or_ShouldThrowArgumentNullException_WhenRightIsNull()
+    {
+        // arrange
+        var left = CreateRule(alwaysTruePredicate);
+
+        // act
+        var exception = Assert.Throws<ArgumentNullException>(() => Or(left, null!));
+
+        // assert
+        Assert.Equal("right", exception.ParamName);
+    }
+
+    [Fact]
+    public void Or_ShouldThrowArgumentNullException_WhenLeftIsNull()
+    {
+        // arrange
+        var right = CreateRule(alwaysTruePredicate);
+
+        // act
+        var exception = Assert.Throws<ArgumentNullException>(() => Or(null!, right));
+
+        // assert
+        Assert.Equal("left", exception.ParamName);
     }
 }
